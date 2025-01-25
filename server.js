@@ -54,16 +54,22 @@ io.on("connection", (socket) => {
       });
 
       socket.on("close-room", () => {
-        if (socket.id === roomCreatorId) {
-          io.to(activeRoom).emit("room-closed");
-          io.socketsLeave(activeRoom);
-          activeRoom = null;
-          roomCreatorId = null;
-          console.log("Room closed by creator");
-        } else {
-          socket.emit("error", "Only the room creator can close the room.");
-        }
-      });
+  if (socket.id === roomCreatorId) {
+    io.to(activeRoom).emit("room-closed");
+    io.socketsLeave(activeRoom); // Make sure all clients leave the room
+    activeRoom = null;           // Clear the active room
+    roomCreatorId = null;       // Clear the room creator ID
+    console.log("Room closed by creator");
+
+    // To make sure the next room can be created
+    setTimeout(() => {
+      console.log("Ready for new room creation");
+    }, 500); // Timeout to ensure the state is cleared
+  } else {
+    socket.emit("error", "Only the room creator can close the room.");
+  }
+});
+
 
       socket.on("disconnect", () => {
         console.log("User disconnected");
