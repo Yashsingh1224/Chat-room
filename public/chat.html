@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chat Room</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="chat-container">
+      <div class="chat-header">
+        <h2>Chat Room</h2>
+        <button id="closeRoomBtn" class="close-btn">Close Room</button>
+      </div>
+      <!-- Added room ID display -->
+      <div id="roomIdDisplay" class="room-id"></div>
+      <div id="messages" class="chat-box"></div>
+      <div class="chat-input-area">
+        <input id="chatInput" type="text" placeholder="Type a message..." />
+        <button id="sendButton">Send</button>
+      </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      const urlParams = new URLSearchParams(window.location.search);
+      const roomId = urlParams.get("room");
+      const userName = localStorage.getItem("userName");
+      const socket = io();
+
+      // Display the room ID in the chat
+      document.getElementById("roomIdDisplay").innerText = `Room ID: ${roomId}`;
+
+      if (!userName) {
+        alert("Name is required. Redirecting to the home page.");
+        window.location.href = "/";
+      }
+
+      socket.emit("join-room", { roomId, userName });
+
+      socket.on("error", (errorMessage) => {
+        alert(errorMessage);
+        window.location.href = "/";
+      });
+
+      // Display chat message
+      socket.on("chat message", function ({ sender, msg }) {
+        const item = document.createElement("div");
+        item.className = "message received";
+        item.innerHTML = `<strong>${sender}:</strong> ${msg}`;
+        document.getElementById("messages").appendChild(item);
+        item.scrollIntoView({ behavior: "smooth" });
+      });
+
+      // Display join/leave message
+      socket.on("user-status", function (statusMsg) {
+        const item = document.createElement("div");
+        item.className = "status-message";
+        item.innerHTML = statusMsg;
+        document.getElementById("messages").appendChild(item);
+        item.scrollIntoView({ behavior: "smooth" });
+      });
+
+      document
+        .getElementById("chatInput")
+        .addEventListener("keypress", function (event) {
+          if (event.key === "Enter") {
+            sendMessage();
+          }
+        });
+
+      document.getElementById("sendButton").onclick = sendMessage;
+
+      function sendMessage() {
+        const input = document.getElementById("chatInput");
+        if (input.value.trim()) {
+          const item = document.createElement("div");
+          item.className = "message sent";
+          item.innerHTML = `<strong>You:</strong> ${input.value}`;
+          document.getElementById("messages").appendChild(item);
+          item.scrollIntoView({ behavior: "smooth" });
+
+          socket.emit("chat message", { sender: userName, msg: input.value });
+          input.value = "";
+        }
+      }
+
+      document.getElementById("closeRoomBtn").onclick = function () {
+        socket.emit("close-room");
+      };
+
+      socket.on("room-closed", function () {
+        alert("The room has been closed by the creator");
+        window.location.href = "/";
+      });
+    </script>
+  </body>
+</html>

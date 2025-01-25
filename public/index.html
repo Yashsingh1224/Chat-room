@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Live Chat - Home</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 50px;
+        background-color: #f9f9f9; /* Light background color */
+        color: #333; /* Text color */
+      }
+
+      h1 {
+        margin-bottom: 20px;
+        color: #007bff; /* Heading color */
+      }
+
+      input {
+        padding: 10px;
+        font-size: 16px;
+        margin: 10px;
+        border: 1px solid #ccc; /* Border color */
+        border-radius: 5px; /* Rounded corners */
+        width: 300px; /* Input width */
+      }
+
+      button {
+        padding: 10px 20px;
+        font-size: 18px;
+        margin: 10px;
+        border: none; /* Remove default border */
+        border-radius: 5px; /* Rounded corners */
+        background-color: #007bff; /* Button background color */
+        color: white; /* Button text color */
+        cursor: pointer; /* Pointer cursor on hover */
+        transition: background-color 0.3s; /* Smooth background change */
+      }
+
+      button:hover {
+        background-color: #0056b3; /* Darker button color on hover */
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Welcome to Live Chat</h1>
+    <input id="nameInput" placeholder="Enter your name" />
+    <button id="createRoomBtn">Create Room</button>
+    <input id="roomIdInput" placeholder="Enter Room ID" />
+    <button id="joinRoomBtn">Join Room</button>
+
+    <script>
+      function redirectToChat(roomId) {
+        const name = document.getElementById("nameInput").value.trim();
+        if (!name) {
+          alert("Please enter your name");
+          return;
+        }
+        localStorage.setItem("userName", name);
+        window.location.href = `/chat.html?room=${roomId}`;
+      }
+
+      document.getElementById("createRoomBtn").onclick = async function () {
+        try {
+          const response = await fetch("/create-room");
+          if (!response.ok) {
+            alert(await response.json().error);
+          } else {
+            const data = await response.json();
+            redirectToChat(data.roomId);
+          }
+        } catch (error) {
+          alert("Error creating room");
+        }
+      };
+
+      document.getElementById("joinRoomBtn").onclick = function () {
+        const roomId = document.getElementById("roomIdInput").value.trim();
+        if (roomId) {
+          redirectToChat(roomId);
+        } else {
+          alert("Please enter a valid Room ID");
+        }
+      };
+    </script>
+  </body>
+</html>

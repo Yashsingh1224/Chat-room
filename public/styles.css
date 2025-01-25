@@ -1,0 +1,103 @@
+/* Chat Container */
+body, html {
+    height: 100%;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #e5ddd5;
+}
+
+.chat-container {
+    max-width: 600px;
+    margin: 20px auto;
+    height: 90vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    background-color: #f8f8f8;
+}
+
+/* Header */
+.chat-header {
+    background-color: #075e54;
+    color: white;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.close-btn {
+    background: #ff4d4d;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+/* Chat Box */
+.chat-box {
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    background-color: #e5ddd5;
+}
+
+/* Message Styles */
+.message {
+    max-width: 70%;
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-size: 16px;
+    line-height: 1.4;
+    word-wrap: break-word;
+    position: relative;
+}
+
+.room-id {
+    margin: 10px;
+    font-weight: bold;
+    color: #007bff; /* You can choose any color */
+  }
+  
+
+.message.sent {
+    background-color: #dcf8c6;
+    align-self: flex-end;
+    border-top-right-radius: 0;
+}
+
+.message.received {
+    background-color: #fff;
+    align-self: flex-start;
+    border-top-left-radius: 0;
+}
+
+/* Chat Input Area */
+.chat-input-area {
+    display: flex;
+    background-color: #f0f0f0;
+    padding: 10px;
+}
+
+#chatInput {
+    flex: 1;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+#sendButton {
+    background-color: #075e54;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 20px;
+    margin-left: 10px;
+    cursor: pointer;
+    font-size: 16px;
+}
