@@ -1,8 +1,6 @@
 const express = require("express");
 const http = require("http");
 const { Server } = require("socket.io");
-
-
 let nanoid;
 (async () => {
   const module = await import("nanoid");
@@ -18,7 +16,7 @@ let roomCreatorId = null;
 
 app.use(express.static("public"));
 
-app.get("/create-room", async (req, res) => {
+app.get("/create-room", (req, res) => {
   if (activeRoom) {
     return res
       .status(400)
@@ -54,22 +52,21 @@ io.on("connection", (socket) => {
       });
 
       socket.on("close-room", () => {
-  if (socket.id === roomCreatorId) {
-    io.to(activeRoom).emit("room-closed");
-    io.socketsLeave(activeRoom); // Make sure all clients leave the room
-    activeRoom = null;           // Clear the active room
-    roomCreatorId = null;       // Clear the room creator ID
-    console.log("Room closed by creator");
+        if (socket.id === roomCreatorId) {
+          io.to(activeRoom).emit("room-closed");
+          io.socketsLeave(activeRoom); // Make sure all clients leave the room
+          activeRoom = null;           // Clear the active room
+          roomCreatorId = null;       // Clear the room creator ID
+          console.log("Room closed by creator");
 
-    // To make sure the next room can be created
-    setTimeout(() => {
-      console.log("Ready for new room creation");
-    }, 500); // Timeout to ensure the state is cleared
-  } else {
-    socket.emit("error", "Only the room creator can close the room.");
-  }
-});
-
+          // Ensure that we can create a new room after closing the old one
+          setTimeout(() => {
+            console.log("Ready for new room creation");
+          }, 500); // Timeout to ensure the state is cleared
+        } else {
+          socket.emit("error", "Only the room creator can close the room.");
+        }
+      });
 
       socket.on("disconnect", () => {
         console.log("User disconnected");
