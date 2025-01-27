@@ -3,6 +3,8 @@ const http = require("http");
 const { Server } = require("socket.io");
 const { nanoid } = require("nanoid"); // Synchronous import
 const cors = require("cors");
+const socket = io("https://chat-room-41zj.onrender.com");
+
 
 const app = express();
 const server = http.createServer(app);
