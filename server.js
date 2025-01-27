@@ -6,6 +6,7 @@ const { nanoid } = require("nanoid"); // Synchronous import
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
+const cors = require('cors');
 
 let activeRoom = null;
 let roomCreatorId = null;
@@ -14,6 +15,7 @@ let roomInactivityTimer = null; // Timer for inactivity
 const INACTIVITY_LIMIT = 7 * 60 * 1000; // 7 minutes in milliseconds
 
 app.use(express.static("public"));
+app.use(cors());
 
 app.get("/create-room", (req, res) => {
   if (activeRoom) {
