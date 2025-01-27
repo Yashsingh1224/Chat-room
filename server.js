@@ -10,7 +10,7 @@ const server = http.createServer(app);
 // Configure CORS for Socket.IO
 const io = new Server(server, {
   cors: {
-    origin: "https://chat-room-41zj.onrender.com", // Allow only your deployed URL
+    origin: "*", // Allow only your deployed URL
     methods: ["GET", "POST"],
   },
 });
