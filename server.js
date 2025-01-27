@@ -25,7 +25,7 @@ app.use(express.static("public"));
 // Restrict CORS to the deployed URL
 app.use(
   cors({
-    origin: "https://chat-room-41zj.onrender.com", // Allow only the app
+    origin: "*", // Allow only the app
   })
 );
 
